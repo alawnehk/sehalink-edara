@@ -1,30 +1,27 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PatientController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    // Main Dashboard - Handled by DashboardController
+Route::middleware(['auth'])->group(function () {
+
+    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Module Placeholders (Returning dashboard view as requested)
-    Route::get('/patients', function () {
-        return redirect()->route('dashboard'); 
-    })->name('patients.index');
-
-    Route::get('/appointments', function () {
-        return redirect()->route('dashboard');
-    })->name('appointments.index');
-
-    // Breeze Profile Routes
+    // ✅ Breeze Profile routes (needed for navigation dropdown)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Patients CRUD
+    Route::resource('patients', PatientController::class);
 });
 
 require __DIR__.'/auth.php';
+

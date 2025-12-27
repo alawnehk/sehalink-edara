@@ -16,12 +16,16 @@ return new class extends Migration
             $table->string('medical_record_number')->unique();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('gender'); // Male, Female, Other
+            $table->enum('gender', ['male', 'female']);
             $table->date('date_of_birth');
             $table->string('phone');
             $table->string('national_id')->nullable()->unique();
+            $table->text('address')->nullable();
             $table->timestamps();
-            $table->softDeletes(); // Standard for medical records
+            $table->softDeletes();
+
+            // Index for search performance
+            $table->index(['first_name', 'last_name']);
         });
     }
 
