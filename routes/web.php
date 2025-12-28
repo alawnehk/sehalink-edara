@@ -4,6 +4,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\ClinicController;
+use App\Http\Controllers\SpecialtyController;
+use App\Http\Controllers\DoctorController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,6 +22,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Appointment Management
     Route::resource('appointments', AppointmentController::class);
+
+    // Clinics & Specialties
+    Route::resource('clinics', ClinicController::class);
+    Route::resource('specialties', SpecialtyController::class);
+
+    // Doctor Management
+    Route::resource('doctors', DoctorController::class)->except(['show']);
+    Route::get('doctors/{doctor}/availability', [DoctorController::class, 'availability'])->name('doctors.availability');
+    Route::post('doctors/{doctor}/availability', [DoctorController::class, 'availabilityStore'])->name('doctors.availability.store');
+    Route::delete('doctors/{doctor}/availability/{availability}', [DoctorController::class, 'availabilityDestroy'])->name('doctors.availability.destroy');
 
     // Profile Management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
