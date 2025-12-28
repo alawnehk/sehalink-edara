@@ -1,125 +1,86 @@
 <x-app-layout>
     <x-slot name="header">
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-            <h2 style="font-size:20px;font-weight:600;color:#1f2937;">
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Patient Management
             </h2>
 
-            <!-- ADD PATIENT BUTTON (FORCED COLOR) -->
             <a href="{{ route('patients.create') }}"
-               style="
-                    display:inline-flex;
-                    align-items:center;
-                    padding:10px 16px;
-                    border-radius:8px;
-                    background:#4f46e5;
-                    color:#ffffff;
-                    font-weight:600;
-                    font-size:14px;
-                    text-decoration:none;
-                    box-shadow:0 1px 2px rgba(0,0,0,0.15);
-               "
-               onmouseover="this.style.background='#4338ca'"
-               onmouseout="this.style.background='#4f46e5'">
-               + Add Patient
+               class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md font-semibold text-sm shadow
+                      hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                + Add Patient
             </a>
         </div>
     </x-slot>
 
-    <div style="padding:32px;">
-        <div style="max-width:1100px;margin:auto;">
-
+    <div class="py-8">
+        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             @if (session('success'))
-                <div style="
-                    margin-bottom:16px;
-                    padding:12px;
-                    background:#ecfdf5;
-                    color:#065f46;
-                    border-radius:6px;
-                    font-size:14px;
-                ">
+                <div class="mb-4 rounded-md bg-green-50 p-4 text-sm text-green-800">
                     {{ session('success') }}
                 </div>
             @endif
 
-            <div style="background:#ffffff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-
-                <!-- SEARCH -->
-                <div style="padding:16px;border-bottom:1px solid #e5e7eb;">
+            <div class="bg-white shadow-sm sm:rounded-lg">
+                <div class="p-6 border-b border-gray-200">
                     <form method="GET" action="{{ route('patients.index') }}">
                         <input type="text"
                                name="search"
                                value="{{ request('search') }}"
                                placeholder="Search by name, MRN, or phone..."
-                               style="
-                                   width:100%;
-                                   padding:10px;
-                                   border:1px solid #d1d5db;
-                                   border-radius:6px;
-                                   font-size:14px;
-                               ">
+                               class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
                     </form>
                 </div>
 
-                <!-- TABLE -->
-                <div style="padding:16px;overflow-x:auto;">
-                    <table style="width:100%;border-collapse:collapse;">
-                        <thead style="background:#f9fafb;">
-                            <tr>
-                                <th style="padding:10px;text-align:left;font-size:12px;color:#6b7280;">MRN</th>
-                                <th style="padding:10px;text-align:left;font-size:12px;color:#6b7280;">Full Name</th>
-                                <th style="padding:10px;text-align:left;font-size:12px;color:#6b7280;">Gender</th>
-                                <th style="padding:10px;text-align:left;font-size:12px;color:#6b7280;">Phone</th>
-                                <th style="padding:10px;text-align:right;font-size:12px;color:#6b7280;">Actions</th>
-                            </tr>
+                <div class="p-6 overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">MRN</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Full Name</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Gender</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+                            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                        </tr>
                         </thead>
 
-                        <tbody>
-                            @forelse($patients as $patient)
-                                <tr style="border-top:1px solid #e5e7eb;">
-                                    <td style="padding:10px;font-size:14px;">
-                                        {{ $patient->medical_record_number }}
-                                    </td>
-                                    <td style="padding:10px;font-size:14px;">
-                                        {{ $patient->first_name }} {{ $patient->last_name }}
-                                    </td>
-                                    <td style="padding:10px;font-size:14px;">
-                                        {{ ucfirst($patient->gender) }}
-                                    </td>
-                                    <td style="padding:10px;font-size:14px;">
-                                        {{ $patient->phone }}
-                                    </td>
-                                    <td style="padding:10px;text-align:right;">
-                                        <a href="{{ route('patients.edit', $patient) }}"
-                                           style="padding:6px 10px;border:1px solid #d1d5db;border-radius:4px;font-size:12px;text-decoration:none;color:#374151;">
-                                            Edit
-                                        </a>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($patients as $patient)
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-900">{{ $patient->medical_record_number }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-900">{{ $patient->first_name }} {{ $patient->last_name }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-900">{{ ucfirst($patient->gender) }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-900">{{ $patient->phone }}</td>
 
-                                        <form action="{{ route('patients.destroy', $patient) }}"
-                                              method="POST"
-                                              style="display:inline-block;margin-left:6px;"
-                                              onsubmit="return confirm('Delete this patient?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                    style="padding:6px 10px;border:none;border-radius:4px;font-size:12px;background:#dc2626;color:#ffffff;">
-                                                Delete
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" style="padding:20px;text-align:center;color:#6b7280;">
-                                        No patients found.
-                                    </td>
-                                </tr>
-                            @endforelse
+                                <td class="px-4 py-3 text-sm text-right space-x-2">
+                                    <a href="{{ route('patients.edit', $patient) }}"
+                                       class="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-xs text-gray-700 bg-white hover:bg-gray-50">
+                                        Edit
+                                    </a>
+
+                                    <form action="{{ route('patients.destroy', $patient) }}" method="POST" class="inline-block"
+                                          onsubmit="return confirm('Are you sure you want to delete this patient?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="inline-flex items-center px-3 py-1 rounded-md text-xs text-white bg-red-600 hover:bg-red-700">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-4 py-6 text-center text-sm text-gray-500">
+                                    No patients found.
+                                </td>
+                            </tr>
+                        @endforelse
                         </tbody>
                     </table>
 
                     @if(method_exists($patients, 'links'))
-                        <div style="margin-top:16px;">
+                        <div class="mt-4">
                             {{ $patients->links() }}
                         </div>
                     @endif
