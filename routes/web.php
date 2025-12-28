@@ -7,6 +7,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ClinicController;
 use App\Http\Controllers\SpecialtyController;
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\EncounterController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,6 +33,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('doctors/{doctor}/availability', [DoctorController::class, 'availability'])->name('doctors.availability');
     Route::post('doctors/{doctor}/availability', [DoctorController::class, 'availabilityStore'])->name('doctors.availability.store');
     Route::delete('doctors/{doctor}/availability/{availability}', [DoctorController::class, 'availabilityDestroy'])->name('doctors.availability.destroy');
+
+    // Outpatient Encounters
+    Route::resource('encounters', EncounterController::class);
+    Route::post('encounters/{encounter}/close', [EncounterController::class, 'close'])->name('encounters.close');
+    Route::get('encounters/create/from-appointment/{appointment}', [EncounterController::class, 'createFromAppointment'])->name('encounters.createFromAppointment');
 
     // Profile Management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

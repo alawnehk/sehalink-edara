@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Appointment Management
+                Appointments
             </h2>
 
             <a href="{{ route('appointments.create') }}"
@@ -15,6 +15,7 @@
 
     <div class="py-8">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+
             @if (session('success'))
                 <div class="mb-4 rounded-md bg-green-50 p-4 text-sm text-green-800">
                     {{ session('success') }}
@@ -35,18 +36,19 @@
                         </thead>
 
                         <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($appointments as $appointment)
+                        @forelse ($appointments as $appointment)
                             <tr>
                                 <td class="px-4 py-3 text-sm text-gray-900">
-                                    {{ $appointment->patient->first_name ?? '' }} {{ $appointment->patient->last_name ?? '' }}
+                                    {{ $appointment->patient->first_name ?? '' }}
+                                    {{ $appointment->patient->last_name ?? '' }}
                                 </td>
 
                                 <td class="px-4 py-3 text-sm text-gray-900">
-                                    {{ $appointment->doctor->name ?? '' }}
+                                    Dr. {{ $appointment->doctor->name ?? '' }}
                                 </td>
 
                                 <td class="px-4 py-3 text-sm text-gray-900">
-                                    {{ \Carbon\Carbon::parse($appointment->appointment_date)->format('Y-m-d H:i') }}
+                                    {{ $appointment->appointment_date?->format('Y-m-d H:i') }}
                                 </td>
 
                                 <td class="px-4 py-3 text-sm">
@@ -62,13 +64,31 @@
                                 </td>
 
                                 <td class="px-4 py-3 text-sm text-right space-x-2">
+
+                                    {{-- Start Visit --}}
+                                    @if ($appointment->status === 'scheduled' && !$appointment->encounter)
+                                        <a href="{{ route('encounters.createFromAppointment', $appointment) }}"
+                                           class="inline-flex items-center px-3 py-1 rounded-md text-xs text-white bg-emerald-600
+                                                  hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                                            Start Visit
+                                        </a>
+                                    @elseif ($appointment->encounter)
+                                        <span class="inline-flex items-center px-3 py-1 rounded-md text-xs bg-gray-100 text-gray-600">
+                                            Visit Started
+                                        </span>
+                                    @endif
+
+                                    {{-- Edit --}}
                                     <a href="{{ route('appointments.edit', $appointment) }}"
-                                       class="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-xs text-gray-700 bg-white hover:bg-gray-50">
+                                       class="inline-flex items-center px-3 py-1 rounded-md text-xs border border-gray-300
+                                              text-gray-700 bg-white hover:bg-gray-50">
                                         Edit
                                     </a>
 
-                                    <form action="{{ route('appointments.destroy', $appointment) }}" method="POST" class="inline-block"
-                                          onsubmit="return confirm('Are you sure you want to delete this appointment?');">
+                                    {{-- Delete --}}
+                                    <form action="{{ route('appointments.destroy', $appointment) }}" method="POST"
+                                          class="inline-block"
+                                          onsubmit="return confirm('Delete this appointment?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -76,6 +96,7 @@
                                             Delete
                                         </button>
                                     </form>
+
                                 </td>
                             </tr>
                         @empty

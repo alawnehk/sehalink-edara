@@ -5,37 +5,38 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Appointment extends Model
+class Encounter extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'patient_id',
         'doctor_id',
-        'appointment_date',
+        'appointment_id',
+        'chief_complaint',
+        'hpi',
+        'vitals',
+        'diagnosis',
+        'plan',
         'status',
-        'notes',
     ];
 
     protected $casts = [
-        'appointment_date' => 'datetime',
+        'vitals' => 'array',
     ];
 
-    // علاقة الموعد بالمريض
     public function patient()
     {
         return $this->belongsTo(Patient::class);
     }
 
-    // علاقة الموعد بالطبيب (User)
     public function doctor()
     {
         return $this->belongsTo(User::class, 'doctor_id');
     }
 
-    // ✅ علاقة الموعد بالزيارة (Encounter)
-    public function encounter()
+    public function appointment()
     {
-        return $this->hasOne(Encounter::class);
+        return $this->belongsTo(Appointment::class);
     }
 }
